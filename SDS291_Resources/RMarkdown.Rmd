@@ -1,0 +1,73 @@
+---
+title: What's RMarkdown?
+date: "2020-01-27"
+menu:
+  resources:
+    parent: R and RStudio
+    weight: 4
+type: docs
+weight: 4
+output:
+  blogdown::html_page:
+      toc: TRUE
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+```
+
+
+## Intro and Background
+
+Two videos made for a specific textbook and lab session that we won't be using (some sections of introductory statistics and Intro to Data Science here at Smith have used this book). However, the general ideas remain applicable for our class.
+
+### Why `RMarkdown`?
+
+Take a look at this video that explains the principles of what a RMarkdown file does -- and why it's a powerful approach for combining statistical output and text to explain those results.
+
+```{r echo=FALSE}
+blogdown::shortcode('youtube', 'lNWVQ2oxNho')
+```
+
+### How to work with an `RMarkdown` file?
+
+A second video gets more into the mechanics of what goes into an RMarkdown file for our purposes. Ignore the parts about using a "template" -- that's one of the pieces that's specific to a particular textbook and lab that we're not using.  Pay attention, instead, to the general ideas such: header information, code chunks, where `R` code and text each go within the document, and what it means to `knit` the file.
+
+```{r echo=FALSE}
+blogdown::shortcode('youtube', 'lNWVQ2oxNho')
+```
+
+### More detailed introduction
+
+- [Roger Peng](http://www.biostat.jhsph.edu/~rpeng/), a biostatistician at Johns Hopkins, [data science faculty](https://www.coursera.org/specializations/jhu-data-science) there, host of some [statistics and data science podcasts](http://nssdeviations.com/), and [pupeteer](https://www.youtube.com/watch?v=i58Aul5ZB-E&feature=youtu.be), has a helpful video to get started with a new RMarkdown file.
+
+```{r echo=FALSE}
+blogdown::shortcode('youtube', 'DNS7i2m4sB0')
+```
+
+## Troubleshooting `RMarkdown`
+
+You document won’t knit
+
+There could be many reasons that cause a RMarkdown file not to be able to knit, so it's hard in the abstract to give good advice. Usually, the error message will pinpoint the location of the problem. Read the error messages!!
+
+Error messages typically include the line number of the issue of where the issue is. Go to that line of your code and see if something doesn't look right.
+
+Some most common problems we see in this class include:
+
+- having your data loaded in the environment, but not in your RMarkdown file. Remember, an RMd file has to be self-contained, meaning everything that it will need is included in the file itself. 
+
+- including output in your code chunks
+
+- including the > or + prompts that come from the console in your code chunks,
+
+- Not including all the packages you need for your code. This error will occur if you try to use a function in a package that you haven’t loaded previously in your Markdown document. `## Error in library(imadethisup): there is no package called 'imadethisup'`
+
+- There can be characters `R` doesn't understand and cannot process. This most commonly happens when pasting text in from the pdf textbook, if you have a separate keyboard installed (for a different language), or you try to insert special characters, like greek symbols for an equation.
+
+- As we get into the course, you may want to write out equations using the equation features in RMarkdown. These can get complicated -- and thus, extremely error prone -- very quickly. Most of the time you're either missing a `$` or need a space (or to remove a space) between the `$` and the equation.
+
+-No Knit HTML button: This means that RStudio doesn’t understand your document is supposed to be an RMarkdown document, often because your file extension is .txt. To fix this, go to the Files tab (lower right corner, same pane as Plots and Help) and select the checkbox next to your document’s name. Then select Rename and remove the .txt and make sure the extension is .Rmd. 
+
+### Getting more help
+When in doubt, consult the authoritative source. The R Markdown website contains a detailed tutorial with videos. There are also Cheatsheets available from within RStudio. Simply go to: Help -> Cheatsheets -> R Markdown Cheat Sheet for the most commonly used R Markdown commands.

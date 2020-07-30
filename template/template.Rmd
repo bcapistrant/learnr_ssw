@@ -1,0 +1,405 @@
+---
+title: "teachr Collaboration Template"
+author: "Your Name(s)"
+date: "YYYY-MM-DD"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+description: "This description will show up in R Studio's preview of the tutorial in the 'tutorial' pane"
+---
+
+```{r setup, include=FALSE}
+#The setup chunk is critical. You need to call all packages and bring in (and wrangle) any data that you want the user to have for *any* example or activity, unless you want to add later example/exercise-specific chunks to bring in additional data. 
+library(learnr)
+library(dplyr)
+library(psych)
+library(MBESS)
+library(lavaan)
+data(psych::bfi)
+bfi <- tibble::as_tibble(bfi)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1. Introduction
+
+Describe the "big picture" context first
+
+In this tutorial, you will learn to...
+
+In the next section, you will learn about the example data set we will be using throughout this tutorial...
+
+## 2. The Data
+
+We will be using ...
+
+If you can, include a visual overview to the data set. 
+
+(Transition to first learning goal)
+
+## 3. Learning Goal 1
+
+Overview/Context
+
+### Learning Goal 1 Part A
+
+Here's something important. Run the example below to see how to ...
+
+#### Example 3.A
+```{r comment1}
+#I like to name my examples (eg) and exercises (ex) based on what level 2 (##) and level 3 (###) heading they are housed under. In this case, this is an example under 3 Part A, so I call the chunk eg3_a. 
+
+#exercise = TRUE is needed to prompt learnr that this is either an example or exercise. exercise.eval=FALSE will ensure user needs to click "run code" to show the output
+```
+
+```{r eg3_1, exercise=TRUE, exercise.eval=FALSE}
+# Save average of average scores of N1:N5 in new column: bfi$neuro_avg
+bfi$neuro_avg <- (bfi$N1 + bfi$N2 + bfi$N3 + bfi$N4 + bfi$N5)/5
+
+#Check out the first few neuro average scores
+head(bfi$neuro_avg)
+```
+
+#### Coding Exercise 3.A
+
+Amend the code below to... View the first few... 
+
+```{r comment2}
+#Use the "amend" strategy if you want to provide users with some starter code (often from a previous example) to adapt, otherwise you could leave the code blank. For now (until we have the time/people/knowledge to use companion packages to check exercises), using the "view the first few..." gives us an assessment-target (they do a thing, view the results, and then can answer questions to see if they got the right answer) for the quiz that immediately follows (for naming the chunk, I usually append _check to whatever the exercise chunk was named)
+```
+
+```{r ex3_a, exercise=TRUE, exercise.eval=FALSE}
+bfi$neuro_avg <- (bfi$N1 + bfi$N2 + bfi$N3 + bfi$N4 + bfi$N5)/5
+head(bfi$neuro_avg)
+```
+
+Let's make sure you got the right output!
+
+```{r ex3_a_check, echo=FALSE}
+quiz(caption = "Exercise 3.1 Check-In",
+  question("What is the value for the first sum score?",
+    answer("20"),
+    answer("5"),
+    answer("14", correct = TRUE),
+    answer("30")
+  ),
+  question("What is the value for the fith sum score?",
+    answer("16", correct = TRUE),
+    answer("12"),
+    answer("11"),
+    answer("15")
+  )
+)
+```
+
+### Learning Goal 1 Part B
+
+Here's something else important. Maybe it's a different way to do the same thing. Or maybe it's adding a bit of complexity/detail...Should be related to the learning goal of 3, otherwise should be under its own level 2 header.
+
+Run the example below to see ...
+
+#### Example 3.B
+
+```{r eg3_b, exercise=TRUE}
+#Recode items O2 and O5 into new reverse-scored (_r) variables
+bfi$O2_r <- 7 - bfi$O2
+bfi$O5_r <- 7 - bfi$O5
+
+#Save average scores for openness from O1:O5, using the reverse-scored items where appropriate
+bfi$open_avg <- (bfi$O1 + bfi$O2_r + bfi$O3 + bfi$O4 + bfi$O5_r)/5
+
+#Check out the first few open average scores
+head(bfi$open_avg)
+```
+
+#### Coding Exercise 3.B
+
+Amend the code below to ... View the first few ...
+
+```{r ex3_b, exercise=TRUE}
+bfi$O2_r <- 7 - bfi$O2
+bfi$O5_r <- 7 - bfi$O5
+
+bfi$open_avg <- (bfi$O1 + bfi$O2_r + bfi$O3 + bfi$O4 + bfi$O5_r)/5
+
+head(bfi$open_avg)
+```
+
+```{r ex3_b-solution}
+#Reverse-score A1 (only item needing reverse-scoring)
+bfi$A1_r <- 7 - bfi$A1
+
+#Save average scores for openness from A1:A5, using the reverse-scored item for A1
+bfi$agree_avg <- (bfi$A1_r + bfi$A2 + bfi$A3 + bfi$A4 + bfi$A5)/5
+
+#Check out the first few agree average scores
+head(bfi$agree_avg)
+```
+
+Let's make sure you got the right output!
+
+```{r ex3_b_check, echo=FALSE}
+
+quiz(caption = "Exercise 3.2 Check-In",
+  question("What is the value for the sceond average score?",
+    answer("4.2", correct = TRUE),
+    answer("5.3"),
+    answer("3.8"),
+    answer("4.0")
+  ),
+  question("What is the value for the fourth average score?",
+    answer("4.1"),
+    answer("3.8"),
+    answer("4.2"),
+    answer("4.6", correct = TRUE)
+  )
+)
+```
+
+### Summary of Learning Goal 1
+
+This might only be necessary if Learning Goal 1 is complicated (i.e., with a few level 3 subheadings)
+
+## 4. Learning Goal 2
+
+Here's a new thing! And look! A beautiful illustration provided by @allison_horst. Any images will need to be saved in your tutorial's "images" sub-folder. Note, this was the only successful approach I was able to bumble upon for including images. If anyone else finds a better way, let the team know and we can update this tutorial! 
+
+```{r, echo=FALSE, out.width="100%", fig.align = "center"}
+knitr::include_graphics("./images/dplyr_mutate.png")  
+```
+
+### Learning Goal 2 Part A
+
+Here's one thing to know about Learning Goal 2... Run the code below to see how this is done..... 
+
+#### Example 4.A
+
+```{r eg4_a, exercise=TRUE}
+# Save bfi back into itself with...
+bfi <- bfi %>% 
+  mutate(neuro_avg2 = (N1+N2+N3+N4+N5)/5)#...a new column called neuro_avg2
+
+#Check out the first few neuro average scores; they are the same as with Base R
+head(bfi$neuro_avg2)
+
+```
+
+#### Coding Exercise 4.A
+
+Amend the code below to ... End by checking the first few ... 
+
+```{r comment3}
+#To add hints and/or the solution to the exercise, you need to add additional chunks that show the general (or entire) reveal. These chunks need to be named the same as the exercise chunk and then -hint or -solution. If multiple hints, start at 1 and increase. 
+```
+
+```{r ex4_a, exercise=TRUE}
+# Save bfi back into itself with...
+bfi <- bfi %>% 
+  mutate(A1_r2 = (7 - A1), #...a new variable called A1_r2 for reverse-scored A1 and
+    agree_avg2 = (A1_r2+A2+A3+A4+A5)/5)#...a new column called agree_avg2 using A1_r2
+
+
+#Check first few agreeableness average scores
+head(bfi$agree_avg2)
+
+#Check first few openness average scores
+
+#Check first few conscientiousness average
+
+#Check first few extraversion average
+
+#Check first few neuroticism average
+
+```
+
+```{r ex4_a-hint-1}
+# Save bfi back into itself with...
+bfi <- bfi %>% 
+  mutate(A1_r2 = (7 - A1), #...a new variable called A1_r2 for reverse-scored A1 and
+    agree_avg2 = (A1_r2+A2+A3+A4+A5)/5,
+    O2_r2 = ...,
+    O5_r2 = ... ,
+    open_avg2 = ...)#...a new column called agree_avg2 using A1_r2
+
+#Check first few agreeableness average scores; the same as with Base R
+head(bfi$agree_avg2)
+
+#Check first few openness average scores
+
+#Check first few conscientiousness average
+
+#Check first few extraversion average
+
+#Check first few neuroticism average
+```
+
+```{r ex4_a-hint-2}
+# Save bfi back into itself with...
+bfi <- bfi %>% 
+  mutate(A1_r2 = (7 - A1), #...a new variable called A1_r2 for reverse-scored A1 and
+    agree_avg2 = (A1_r2+A2+A3+A4+A5)/5,
+    O2_r2 = ...,
+    O5_r2 = ... ,
+    open_avg2 = ...,
+    C4_r2 = ...,
+    C5_r2 = ...,
+    consci_avg2 = ...)#...a new column called agree_avg2 using A1_r2
+
+#Check first few agreeableness average scores; the same as with Base R
+head(bfi$agree_avg2)
+
+#Check first few openness average scores
+
+#Check first few conscientiousness average
+
+#Check first few extraversion average
+
+#Check first few neuroticism average
+```
+
+```{r ex4_a-hint-3}
+# Save bfi back into itself with...
+bfi <- bfi %>% 
+  mutate(A1_r2 = (7 - A1), #...a new variable called A1_r2 for reverse-scored A1 and
+    agree_avg2 = (A1_r2+A2+A3+A4+A5)/5,
+    O2_r2 = ...,
+    O5_r2 = ... ,
+    open_avg2 = ...,
+    C4_r2 = ...,
+    C5_r2 = ...,
+    consci_avg2 = ...,
+    E1_r2 = ...,
+    E2_r2 = ...,
+    extra_avg2 = ...)#...a new column called agree_avg2 using A1_r2
+
+#Check first few agreeableness average scores; the same as with Base R
+head(bfi$agree_avg2)
+
+#Check first few openness average scores
+
+#Check first few conscientiousness average
+
+#Check first few extraversion average
+
+#Check first few neuroticism average
+```
+
+```{r ex4_a-solution}
+# Save bfi back into itself with...
+bfi <- bfi %>% 
+  mutate(A1_r2 = (7 - A1), #...a new variable called A1_r2 for reverse-scored A1 and
+    agree_avg2 = (A1_r2+A2+A3+A4+A5)/5,
+    O2_r2 = (7-O2),
+    O5_r2 = (7-O5),
+    open_avg2 = (O1 +O2_r2+O3+O4+ O5_r2)/5,
+    C4_r2 = (7-C4),
+    C5_r2 = (7-C5),
+    consci_avg2 = (C1+C2+C3+C4_r2+C5_r2)/5,
+    E1_r2 = (7-E1),
+    E2_r2 = (7-E2),
+    extra_avg2 = (E1_r2+E2_r2+E3+E4+E5)/5,
+    neuro_avg2 = (N1+N2+N3+N4+N5)/5)#...a new column called agree_avg2 using A1_r2
+
+#Check first few agreeableness average scores; the same as with Base R
+head(bfi$agree_avg2)
+
+#Check first few openness average scores
+head(bfi$open_avg2)
+
+#Check first few conscientiousness average
+head(bfi$consci_avg2)
+
+#Check first few extraversion average
+head(bfi$extra_avg2)
+
+#Check first few neuroticism average
+head(bfi$neuro_avg2)
+
+```
+
+Let's make sure you got the right output!
+
+```{r ex4_a_check, echo=FALSE}
+quiz(caption = "Exercise 4.1 Check-In",
+  question("What is the value for the first agreeableness average score?",
+    answer("2.5"),
+    answer("3.4"),
+    answer("4.0", correct = TRUE),
+    answer("3.0")
+  ),
+  question("What is the value for the fith openness average score?",
+    answer("5.2"),
+    answer("3.6", correct = TRUE),
+    answer("4.1"),
+    answer("4.0")
+  ),
+  question("What is the value for the sixth conscientiousness average score?",
+    answer("5.6", correct = TRUE),
+    answer("4.1"),
+    answer("3.6"),
+    answer("4.0")
+  ),
+  question("What is the value for the fourth extraversion average score?",
+    answer("2.1"),
+    answer("4.0"),
+    answer("3.6", correct = TRUE),
+    answer("2.5")
+  ),
+  question("What is the value for the second neuroticism average score?",
+    answer("3.8", correct = TRUE),
+    answer("2.1"),
+    answer("4.7"),
+    answer("3.5")
+  )
+)
+```
+
+### Summary of Learning Goal 2
+
+
+## 5. Learning Goal 3
+
+Here's one final thing. And it's so straightforward, it doesn't require subheadings or examples or exercises because I am lazy. 
+
+## 6. Common Errors and How to Solve Them
+
+Here are a few really common/frustrating errors that new folks might run into, and how to fix them. This might be described sometimes, other times involve images, and other times involve examples and exercises. Alternatively, it may be more effective to address these problems/solutions in the learning goals themselves (e.g., as a level 3 header subtopic)
+
+## 7. Knowledge Check
+
+Here is where a final open-ended (i.e., no starter script) coding exercise and quiz could take place to make sure students could apply these techniques to a new data set/context: 
+
+Write code below to ... Also be sure to check your first few ... 
+
+```{r ex_final, exercise=TRUE}
+
+```
+
+Let's check to make sure you got the correct output:
+
+```{r ex_final_check, echo=FALSE}
+quiz(caption = "Final Check-In",
+  question("Here's a final question/quiz",
+    answer("Wrong"),
+    answer("Wrong again"),
+    answer("Still wrong"),
+    answer("Correct!", correct = TRUE)
+  ))
+```
+
+## 8. Tutorial Summary
+
+Here's where you can wrap up the tutorial. Restate the big picture, the theme of the tutorial, and what learning goals were covered. 
+
+## Supplemental Reading
+
+Want to learn more about...? Below are some excellent supplemental readings. Some of these readings are more (B)eginner friendly and others are more (A)dvanced, and so we have marked each reading appropriately. 
+
+1. $^B$McNeish, D. (2018). [Thanks coefficient alpha, we'll take it from here]([https://psycnet.apa.org/record/2017-23572-001]). *Psychological Methods*, *23*, 412-433. 
+
+2. $^B$McNeish, D., & Wolf, M. G. (in press). [Thinking twice about sum scores]([https://link.springer.com/content/pdf/10.3758/s13428-020-01398-0.pdf]). *Behavior Research Methods*. 
+
+3. $^A$Skrondal, A., & Laake, P. (2001). [Regression among factor scores](https://idp.springer.com/authorize/casa?redirect_uri=https://link.springer.com/article/10.1007/BF02296196&casa_token=huxpwlvcWdwAAAAA:hHUMmVNlfZo_R2C4B5yUWdG3WfDeEX--QQlB85X4EXO28nEwTy4LEa8XqjmoMjJQWs7_Rx9slDN1K_VYcg). *Psychometrika*, *66*, 563–575.
+
+4. $^A$Grice, J. W. (2001). [Computing and evaluating factor scores](https://psycnet.apa.org/record/2001-10249-008). *Psychological Methods*, *6*, 430–450. https://doi.org/10.1037/1082-989X.6.4.430

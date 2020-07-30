@@ -1,0 +1,13 @@
+name: 1_Intro_to_R_and_Data
+title: 1_Intro_to_R_and_Data
+username:
+account: benjamin-capistrant
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2563048
+bundleId: 3384158
+url: https://benjamin-capistrant.shinyapps.io/1_Intro_to_R_and_Data/
+when: 1594605553.3462
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: IntroPiece.docx|Temp.html|Temp.Rmd|TestingTutorial.html|TestingTutorial.Rmd|Untitled.html|Untitled.Rmd|img/tidydata.jpg|img/tidydata.png|SDS291_Resources/homework.Rmd|SDS291_Resources/install.Rmd|SDS291_Resources/interface.Rmd|SDS291_Resources/RMarkdown.Rmd|template/.Rhistory|template/template.html|template/template.Rmd|template/images/dplyr_mutate.png

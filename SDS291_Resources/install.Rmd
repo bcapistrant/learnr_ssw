@@ -1,0 +1,37 @@
+---
+title: Installing R, RStudio, and Packages
+date: "2020-01-27"
+menu:
+  resources:
+    parent: R and RStudio
+    weight: 1
+type: docs
+weight: 1
+output:
+  blogdown::html_page:
+      toc: TRUE
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+```
+
+<span class="newthought">We will do all of the modeling (and other computational work) in this class with the open source (and free!) programming language [R](https://cran.r-project.org/). You will use [RStudio](https://www.rstudio.com/) as the main program to access R. R is the language and what's running "under the hood", and RStudio is essentially a really user-friendly way to do what you want in R.
+
+There are a few different ways to work with R and RStudio. For new users, I would recommend using the server. For anyone who has used R before, you can use the server or the desktop version.
+
+
+## RStudio.cloud
+
+[RStudio.cloud](http://rstudio.cloud/) is a cloud-based application of RStudio that run by RStudio, not by the College and its IT team. There will still be up/downloading like with the server, but the main advantage of this approach is that we can all share the same documents in a class "workspace", which makes getting stared even a little easier. Part of the "Getting Started" assignment was to make an account -- again, easiest if connected to your Smith Google account -- and I will provide a link to a shared class workspace before we start using RStudio.cloud. 
+
+This is a great option for class -- I _strongly_ recommend anyone new to R and RStudio use this option.  It requires a bit of uploading and downloading to get documents on and off the server (just like uploading and downloading from Google Drive, Dropbox, etc.), but otherwise is all set up with everything you need.
+
+## Smith College RStudio Server
+
+Smith College runs its own version of RStudio that's accessable through your web browser and won't require installing anything. Sort of like RStudio.cloud but more stable and just for Smith community members. The server is being updated this summer and requires a VPN connection to a Smith IP address. 
+
+
+## RStudio locally on your computer
+
+The server and cloud approaches are great for probably 90% of what we'll do in the class. If you want to work on RStudio locally on your computer, you certainly can.  First, you'd need to download and [install `R`](https://cran.r-project.org/). Second, download and [install RStudio](https://www.rstudio.com/products/rstudio/download/#download). And you should be good to go! I'm also happy to help if this is an approach you want to take. 

@@ -1,0 +1,137 @@
+---
+title: "Statistical Testing with Categorical Dependent Variables"
+author: "Ben Capistrant"
+date: "2020-07-24"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+description: "This tutorial will cover chi-square tests and simple logistic regression."
+---
+
+```{r setup, include=FALSE}
+#The setup chunk is critical. You need to call all packages and bring in (and wrangle) any data that you want the user to have for *any* example or activity, unless you want to add later example/exercise-specific chunks to bring in additional data. 
+library(learnr)
+library(tidyverse)
+library(mosaic)
+data("HELPrct")
+HELPrct<-HELPrct %>% mutate(cesd_d=as.factor(if_else(cesd>=16, "High Depressive Symptoms", "Low Depressive Symptoms")))
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1. Introduction
+
+In this exercise, we're going to be looking at the methods for statistical tests with a dependent variable that is categorical. In particular, we will be discussing the chi-square test. Like the previous tutorial, we will then illustrate the corollary test in a regression framework: using simple logistic regression to get the same chi-square test.
+
+This tutorial assumes that you are familiar with each of these tests, even if you're a little rusty. In other words, we won't really be talking as much about what a t-test *is* so much as *how to conduct one using `R`*  If you want more of a refresher on these topics themselves, you might consult previous research methods course materials and/or Chapters 3 from Introduction to Statistics with Randomization and Simulation$^1$, which is available for free [here,](https://drive.google.com/file/d/0B-DHaDEbiOGkRHNndUlBaHVmaGM/edit) along with brief video introductions of these concepts available as well (see citation below for link).
+
+$^1$ Diez, D. M., Barr, C. D., & Çetinkaya-Rundel, M. (2014). _Introductory statistics with randomization and simulation._ OpenIntro. [https://www.openintro.org/book/isrs/](https://www.openintro.org/book/isrs/)
+
+## 2. The Data
+
+We will be using the `HELPrct` data again.  For reference, here are some of the variables included in the dataset, including which are continuous, categorical, and binary.
+
+| Variable Name | What the variable measures | Units | Continuous or Categorical? |
+|--------------|--------------------------------------|------------------|------------------|
+| `age` | subject age at baseline | in years of age | Continuous |
+| `anysub` | use of any substance post-detox | no, yes | Categorical, Binary |
+| `cesd` | Center for Epidemiologic Studies Depression measure at baseline (high scores indicate more depressive symptoms) | # of depressive symptoms | Continuous |
+| `e2b` | number of times in past 6 months entered a detox program (measured at baseline) | # of times | Continuous |
+| `homeless` | binary measure of permanent housing status | housed, homeless| Categorical, Binary |
+| `i1` | average number of drinks (standard units) consumed per day, in the past 30 days (measured at baseline) | # of drinks | Continuous |
+| `mcs` | SF-36 Mental Component Score (measured at baseline, lower scores indicate worse mental health quality of life status) | Score from 0-100 | Continuous |
+| `pcs` | SF-36 Physical Component Score (measured at baseline, lower scores indicate worse physical health quality of life status) | Score from 0-100 | Continuous |
+| `racegrp` | race/ethnicity: levels | black, hispanic, other, white | Categorical |
+| `sex` | binary measure of sex/gender | male, female | Categorical, Binary |
+| `substance` | primary substance of abuse | alcohol, cocaine, heroin | Categorical |
+| `treat` | binary indicator: whether randomized to HELP clinic | no, yes | Categorical, Binary |
+
+Let's focus on `cesd` as the continuous dependent variable -- however, let's use a binary/dichotomous version of whether the respondent has a CESD score of 16+, which warrants more attention for clinical assessment. This variable is called `cesd_d` to indicate that it is a dichotomous or binary variable.  The $\chi^2$ test works with categorical or binary independent variables, so we will continue to use `homeless` for a binary variable and `substance` for a categorical variable.
+
+## 3. $\chi^2$ test
+
+We can visualize this comparison with two groups, similar to what we did with just one group in exploratory data analysis by filling in the color of the bars based on whether the respondent was housed or homeless (the `fill=homeless` piece of code is new, but the rest we've seen in the exploratory data analysis tutorial).
+
+```{r cesd_homeless_histogram, exercise=TRUE}
+ggplot(HELPrct, aes(x=cesd_d, group=substance, fill=substance))  + geom_bar(position="dodge")
+```
+
+
+We may instead want to illustrate the relative proportion or percent instead of the count of the number of individuals. In other words, to change the units of the y-axis to be % instead of "n" -- especially since we know the groups are different sizes. To do that, we need to calculate the percentages and save them to the dataset. Instead of writing over our original `HELPrct` data, the code below creates a new dataset called `temp` just for this purpose.
+
+```{r categorical_bar_charts, exercise=TRUE, error=FALSE, message=FALSE, warning=FALSE}
+temp<-HELPrct %>%
+# grouping by each of the substances
+  group_by(substance,cesd_d) %>%
+# count the number of people in the group
+  summarise(n = n()) %>%
+# and divide that number by the total to calculate the proportion
+  mutate(percent = (n / sum(n))*100)
+
+ggplot(temp, aes(y=percent, x=cesd_d, fill=substance))  + geom_bar(position="dodge", stat="identity")
+
+```
+
+It looks like there are differences in the prevalence of low depressive symptoms by substance use. In particular, individuals in detox for cocaine there were more people with low depressive symptoms than those in detox for alcohol or heroin.
+
+### 3.A: Conducting the $\chi^2$ tests
+
+We can use the `CrossTable()` function to display numerically what was depicted above visually. This function will characterize the numbers and percents of individuals in the sample by the binary variable of high/low CESD scores and the substance use type in the detox. This table format also reflects the $\chi^2$ test, which is included in the code below with `chisq=TRUE`. If there were no relationship between substance type and high/low CESD symptoms, we would expect to see an equal proportion (say, 10%) of the individuals from each type of substance detox (heroin, cocaine, alcohol) having low CESD scores. If there *is* a relationship, we will see some group's proportion that higher/lower than the other groups.
+
+```{r chisq_test, exercise=TRUE}
+library(gmodels)
+with(HELPrct, CrossTable(substance, cesd_d, prop.c=FALSE, prop.chisq=FALSE, prop.t=FALSE, chisq = TRUE))
+```
+
+A chi-square test of independence was performed to examine the relation between respondent's CES-D score being high enough to warrant clinical depression assessment and primary substance for being in detox treatment. The relation between these variables was statistically significant, $\chi^2$(2, N = 453) = 14.7, p=0.0006. Thus, there was significant evidence to suggest that the distribution of needing clinical assessment for depression varied by primary substance for detox treatment.
+
+
+### 3.B: Logistic Regression
+
+Logistic regression models, which are commonly used when the dependent variable is categorical, also offer a test of the overall model that is similar to the $\chi^2$ test (it's called a likelihood ratio test). This is similar to how we conducted an ANOVA test directly as well as via a linear regression model function. In logistic regression, the overall test of of the model is slightly different than the $\chi^2$ test, so the results aren't identical (the statistical explanation of why here are beyond what we need at the moment) but generally reach the same conclusion about the hypothesis test. 
+
+The point we are illustrating here is that you can also test a hypothesis about the overall relationship between the dependent and independent variables within a regression model framework -- even when the dependent variable is now binary and we are no longer using linear regression models.
+
+A few notes on the code here: 
+
+- we're using the `glm()` function for "generalized linear models" instead of the `lm()` function we used for linear regression. GLM function can fit many different kinds of regression models (hence, generalized), including simple linear regression.
+- we are specifying the distribution type is binomial `family="binomial"` because we have a binary dependent variable
+- we explicitly ask for the $\chi^2$ distribution to be used in the `anova()` function.
+
+```{r cesdd_regression_model, exercise=TRUE}
+log_model<-glm(cesd_d~substance, data=HELPrct, family="binomial")
+anova(log_model, test = "Chisq")
+```
+
+```{r ex3_a_check, echo=FALSE}
+quiz(caption = "Exercise 3.B Check-In",
+  question("Based on the output above, what do you conclude about the relationship between substance and high depression scores?",
+    answer("there is no evidence of a difference in high CESD scores by the substance for the detox"),
+    answer("there is evidence of a difference in high CESD scores by the substance for the detox", correct=TRUE),
+    answer("Unsure"),
+    answer("Cannot tell from the information given")
+  )
+)
+```
+
+
+## 4. Odds, Odds Ratios, and Probabilities
+
+More to come on this soon!
+
+## 5. Tutorial Summary
+
+This tutorial introduced how to conduct statistical tests with binary dependent variables, in and outside of a regression modeling. Specifically, we introduced how a global test of a simple logistic regression model reflects similar information as a $\chi^2$ test.
+
+There ultimately will also be some information here about estimating and interpreting odds ratios from logistic regression models.
+
+## 6. Supplemental Reading
+
+Want to learn more about...? Below are some excellent supplemental readings. Some of these readings are more (B)eginner friendly and others are more (A)dvanced, and so we have marked each reading appropriately. 
+
+1. $^B$Gimond, M. (2017, July 21). [Comparing frequencies: Chi-Square tests](https://mgimond.github.io/Stats-in-R/ChiSquare_test.html) 
+
+2. $^A$Gimond, M. (2018, May 2). [Logistic Regression](https://mgimond.github.io/Stats-in-R/Logistic.html).
+
+3. $^B$Diez, D. M., Barr, C. D., & Çetinkaya-Rundel, M. (2014). _Introductory statistics with randomization and simulation._ OpenIntro. https://www.openintro.org/book/isrs/

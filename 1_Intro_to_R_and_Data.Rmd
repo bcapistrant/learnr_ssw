@@ -1,0 +1,263 @@
+---
+title: "Intro to R & Working with Data"
+author: "Ben Capistrant"
+date: "2020-07-24"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+description: "This tutorial introduces R and how to work with data in R."
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(mosaic)
+data(mosaic::HELPrct)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## 1. Introduction
+
+Welcome to your first module for our course!  Throughout this course, we will be working with data and working on how to communicate what we did with the data, what we found, and why that work matters.  One dimension of a high quality data analysis is that your steps and process are clear enough that someone else could reproduce it.  This replicability and clarity are arguably even more important when working with publicly available secondary data -- anyone has access to the data and should be able to repeat your steps. One way to do that is to keep the analysis and writing very closely connected. We will be using `R` as a way to keep the data analysis and writing of the paper within the same document.
+
+This tutorial is a brief introduction about what `R` is, how it works, and start to use `R` to work with real data. The different sections of this tutorial will include text to read that explains concepts and new terminology, "quiz" questions to check you understanding of the material, and interactive segments where you will be practicing using `R` in real time. Since we will be working with real data, there will also be some discussion toward the end with an introduction to *datasets* we'll see in the course in addition to the introduction to `R`.
+
+Specifically, after completing this tutorial, you will be able to:
+
+- articulate what `R` is
+- explain why `R` is useful for statistical analysis & writing up results
+- define and use key terminology for `R`, like packages and functions
+- employ functions to load a package and real data
+- discuss principles of how data are organized and structured
+- explain what makes a dataset "tidy".
+
+In the next section, you will learn a little more about `R` before getting into working with it in the subsequent sections. 
+
+## 2. What is `R`?
+
+`R` is a programming language, often used for statistical analyses. While the term programming language might feel daunting, most of the ways we will use `R` is not really different than most other conventional statistical software packages, like SAS, Stata, or SPSS. However, that `R` *is* a language can be helpful -- we can approach it like any other language. We can break down the parts of speech and, like a language, once you know some basic syntax, you can easily string together simple sentences, then more complex sentences, and so on. 
+
+### Why use `R`?
+
+There are many reasons to use `R` when working with quantitative data. First, `R` is free and open source. Free software means that unlike many other conventional software packages (e.g., SPSS), you can download it and use `R` freely, across multiple devices. You're not tied to an institutional license, so when you move organizations or leave school, you can always work on R -- you're not developing skills here on something you may not have access to in the future. That `R` is open source means that many people are working on making analysis and data tools within R. As a result, `R` is also well documented, answers are easily Google-able for help when you're stuck. All this is also a reflection of the really friendly, kind, and helpful community of `R` users. And lastly, it will facilitate writing documents that integrate text and our statistical output, which is critical for making reproducible papers.  We'll explore this last point - how you can combine both written text and numerical output from your analysis in the same document - later on.
+
+This tutorial is meant as an introduction to `R`, the way we will be using `R` called RStudio, and a little more about this idea of documents that include both text and statistical output called an RMarkdown file. There will be some videos like this or text as an introduction, and some places for you to practice your `R` skills and knowledge.
+
+First, we will start with a little bit of background on what `R` is and some practice with its basic syntax and structure.
+
+## 3. `R` Terminology - What are Packages & Functions?
+ 
+A benefit of R and RStudio -- the software and interface through which we use the `R` programming language -- are their lightweight, nimble approaches. They do not come with a bunch of stuff you may never need installed. The good thing about this for you is that your computer is not bloated by lots of stuff you don't want and R is able to allocate the processing power (the computer's memory) to what you *do* want it do.
+
+While this lightweight approach is a good thing for you in the end, this way of operating does require a little more extra work for you to be very explicit with `R` about what you *do* need. Again, this is different than SPSS, Stata, or other statistical software that you can use interactively by pointing-and-clicking; everything you could possibly ask it to do for you us already ready to go. Instead, we have to tell `R` exactly what it needs to know. Let's break this idea down a little more into two separate, but related ideas that you need to understand to do this: *what you need* and *how to tell `R` to have it ready*.
+
+The first idea - *what you need* - are what `R` calls "packages." You could use this metaphor pretty directly -- it's like a package or box of books you have stored somewhere like an attic, basement, etc. You might imagine that you have a bunch of reference books on neurobiology, others on social justice and clinical work, others on how to take case notes. Since you're extremely organized, you have tied these books together by subject, or boxed them in one box, and labelled with a name on the outside of the box so that they are easier to find. As [others have said more directly](https://r4ds.had.co.nz/introduction.html), "an R package is a collection of functions, data, and documentation. Using packages is key to the successful use of R."
+
+The second idea - *how to tell `R` what you need* - is a command to get the box from the attic / storage and keep it nearby. You know you're going to need your neurobiology books handy for a paper you're writing, so you go get the package and put it on your bookshelf near where you're working. There are a few functions or commands that tell `R` to get the package handy, and we will use `library()` function in this class. Again, you might imagine this metaphor with books is literal - it's saying "bring these books (your own library of books) nearby."  If the package were named `neurobio_books` we could use the library function to bring that package by simply naming the package inside the parentheses of the `library()` function: `library(neurobio_books)`.
+
+### What's in a package - data, functions, and documentation
+
+Within `R` packages, there could be either data, functions or commands of other things to do, or both. Let's use cooking related analogy to describe what this might look like, and in different combinations of what certain packages will do.
+
+First, it's worth noting that `R` does include some packages pre-loaded, including the "base" package -- key things that `R` thinks you'll need as a starting point. In the cooking analogy, this might include know how to chop a vegetable, how chopping is different from dicing, etc. And just like there's YouTube/Google when you actually have no idea what a dice or chop is, or how to sharpen your knives, there is built in help for these functions.
+
+If you subscribed to a *meal prep service* like Blue Apron, you might get raw ingredients (data) and also a set of instructions (functions). 
+
+If you had a *recipe service* like the New York Times Cooking Newsletter, a cooking magazine, etc., you would only be getting the recipes or instructions (functions). These packages assume you have the data (food in the fridge/pantry) and just need the functions (recipes / instructions). 
+
+If you had a services like a farm share or [CSA](https://www.localharvest.org/csa/), a local meat or egg delivery, or the [imperfect vegetable](https://www.misfitsmarket.com/) [delivery services](https://www.imperfectfoods.com/), you would just be getting a package of just data. In this case, you would only need the raw data but have all of the functions (cooking know-how) already.
+
+And of course, you can bring in multiple packages to have together for the kind of project you're doing (meal you're making): your cookbook package for the functions you know you have but don't know off the top of your head and a data package for all the ingredients. 
+
+```{r quiz-new}
+learnr::quiz(
+  question("What can R packages contain?",
+    answer("statistical test results"),
+    answer("data", correct = TRUE),
+    answer("functions"),
+    answer("graphs of data")
+  ),
+  question("What function loads a package?",
+    answer("library()", correct = TRUE),
+    answer("shelf()"),
+    answer("stats()"),
+    answer("grid()")
+  )
+)
+```
+
+
+## 4. Practice Working with Packages & Functions with Real Data
+
+We want to use data from a package called `mosaic`. The steps to get to work with these data are:
+
+1. use the `library()` function to bring in the library
+
+2. use the `data()` function to load a specific data set.
+
+Let's do each of these steps one-at-a-time, and use the help function along the way.
+
+### Loading the `mosaic` package
+
+Write the R code required bring in the `mosaic` package:
+
+```{r library-package, exercise=TRUE, message=FALSE, warning=FALSE, error=FALSE}
+
+```
+
+```{r library-package-hint}
+library(mosaic)
+```
+
+It may *seem* like nothing happened -- hopefully, you clicked *"Run Code"*, saw that box turn grey, a spinner spun for a while, and then the box turned colors back to blue -- but actually that "nothing happened" sense is by design: *the package got loaded on the back end without you even having to see it.*
+
+To see if that worked, let's check to see if we can *so* something with the package -- like loading a dataset that's in the package.
+
+### Loading the data from the `mosaic` package.
+
+Now that you have the `mosaic` package handy, you can tell `R` to use its contents. In our case, we want to work with one of the datasets stored in the package. We'll talk more about the specifics of the data in a little bit. For now, let's just extend your work to bring in packages.
+
+#### An Aside - A Linguistic Analogy
+This is a point where its helpful to remember that `R` is a programming language. Like many languages, there is a discernible syntax. In fact, I find it helpful to think about the English (or other language) analogues to the `R` language. 
+
+Functions are the verb -- the function will *do* something, and that something is included in the parentheses that follow the name of the function. What you put inside the parentheses is sort of like the subject or object of the sentence. If `saute()` is the function, what are you sauteing? `saute(broccoli)` is like a command to saute the broccoli. 
+
+If we want to take the language metaphor further, a function's verb tense is almost always the imperative -- it's a command. So like "Pass the salt," or "Wake her" where pass / wake are the verbs and the salt or her are the direct or indirect objects. The subject - you / `R` - is implied.
+
+So `library(mosaic)` is like saying "Prepare `mosaic`", "Get `mosaic` ready", or most literally "Bring `mosaic` into the local library," -- all verbs of an action that you're doing related to some subject/object.
+
+#### Back to the task at hand
+
+Now that we're getting a better understanding of functions, let's extend our repertoire functions by bringing in some of the data from the `mosaic` package.
+
+Run the following code chunk.
+
+```{r data-HELP, exercise=TRUE}
+data("HELPrct")
+```
+
+
+```{r data-function-quiz}
+learnr::quiz(
+  question("What function did you use in the code chunk above?",
+    answer("HELP"),
+    answer("HELPrct"),
+    answer("data", correct = TRUE),
+    answer("library")
+  )
+)
+```
+
+To see that the function above worked, use another function `head()` to show you the "head" of the data, or just the first 5 rows of data (there is a corollary function for the last 5 rows called `tail()`). 
+
+```{r head-function, exercise=TRUE}
+head(HELPrct)
+```
+
+```{r head-results-quiz}
+quiz(
+  question("What is the value for `cesd` of the person in the 5th row",
+    answer("37"),
+    answer("26"),
+    answer("39", correct = TRUE),    
+    answer("32"),
+    answer("47")
+  )
+)
+```
+
+We'll talk more about what these data actually are in the future. For now, we're mostly just using the data as a placeholder -- these could be *any* data -- so don't worry about what any of these variables or values mean just yet (i.e., what is `cesd` and what do its numbers mean?). We'll get there soon.  In the meantime, we're using this example to think about how the data we will be working with are structured -- what do the rows and the columns mean?
+
+### An aside -- how to get help
+
+If we wanted to know how the function worked, we can use the help function to ask for the documentation about
+
+Each package has help built in, which is especially useful for getting more details on either the data -- was this potato organically grown? -- or on the functions -- what does saute mean? -- that are useful. We can get help with a command that, appropriately, starts with a question mark, followed by the thing (e.g., package, data, function) we want help with. If you wanted help with the `neurobio_books` package, you could get it by running the following command `?neurobio_books`. There isn't a standard organization to the help -- it may be a little or a lot of material, helpful or not -- but *something* should always be there.
+
+Based on that explanation about what the calls up "help", try writing the code that will give you the help for the `data` function. And use the "hint" if you're stuck.
+
+```{r package-help, exercise=TRUE, exercise.eval=TRUE}
+
+```
+
+```{r package-help-hint}
+?data
+```
+
+## 5. Data Structures
+
+The dataset we just used has a structure we will see again and again: 
+
+1. each *row* is a different *person* in the survey, 
+
+2. each *column* is a different *variable* in the dataset, and
+
+3. the contents of each cell is a specific person's (row) *value* for a specific variable (the column). 
+
+So you can read across the row and look at each value (in the cell) for all of the variables; this might be important if you're looking through one person's information (how old is this person, what's their gender, and their education?). Alternatively, you could read down the column for all of the values of that variable for each of the different observations; this might be useful for getting a sense of the range of answers for that particular variable, for outlying values (i.e., which observation says they are 271 years old??).
+
+Again, most of our examples will be where the "observations" are individual people, but they don't need to be. For example, in the table below, each row/observation is a different food, and each column/variable is some piece of nutritional information (serving size, calories, and grams of each macro-nutrient - fat, protein, carbohydrate).
+
+| Food | Serving Size | Calories | Fat | Protein | Carbohydrate |
+|:-----------|:--------|:-------|:-----|:-----|:------|
+| Butter, Unsalted | 100g | 717 | 81.11 | 0.85 | 0.06 |
+| Carrots, raw | 100g |	41 |	0.24 |	0.93 |	9.58 |
+| Potatoes, raw |	100g |	77 |	0.09 |	2.05 |	17.49 |
+
+These principles of how data are organized -- particularly among `R` users and the `R` language -- come from the definition of "tidy" data. 
+
+> There are three interrelated rules which make a dataset tidy:
+
+> 1. Each variable must have its own column.
+2. Each observation must have its own row.
+3. Each value must have its own cell.
+-- Hadley Wichkham, [R for Data Science](https://r4ds.had.co.nz/tidy-data.html)
+
+To be clear, there are a few ideas here that have terms we are using interchangeably: **Rows:Observations :: Columns:Variables**. One version of these terms is structural (rows and columns) and speaks more about the data management and arrangement. The other is more conceptual (observations and variables) and is more reflective of how we plan to use these data in our data analysis.
+
+![](https://www.bencapistrant.com/img/tidydata.png)
+
+These terms and ideas about "tidy" data have been a foundation for a huge number of different functions, packages, and ways to write `R` code. Think of it as the "tidy" *dialect* of the `R` language (e.g., [Spanish from Latin America vs. from Spain](https://en.wikipedia.org/wiki/Spanish_dialects_and_varieties) or [British vs. American English](https://en.wikipedia.org/wiki/List_of_dialects_of_English)). 
+
+You'll see that we will use a package called `tidyverse` a lot in the subsequent examples. `tidyverse` is actually sort of a meta-, or umbrella, package: it includes a multiple packages that all employ with this shared dialect to do different actions -- visualize data, manage data, etc. You can learn more about the `tidyverse` [here.](https://www.tidyverse.org/)
+
+```{r tidy-structure-quiz}
+quiz(
+  question("For tidy data, what do the rows reflect?",
+    answer("columns"),
+    answer("observations", correct = TRUE),
+    answer("variables"),    
+    answer("cells")
+  ),
+  question("For tidy data, what do the columns reflect?",
+    answer("rows"),
+    answer("observations"),
+    answer("cells"),    
+    answer("variables", correct = TRUE)
+  )
+)
+```
+
+## 6. Tutorial Summary
+
+This tutorial:
+
+- explained what `R` is
+- introduced why `R` is useful for statistical analysis & writing up results
+- discussed what `R` packages are
+- explored what `R` functions are and what they do
+- practiced using functions to load a package and real data
+- introduced principles of how data are organized and structured
+- defined principles of "tidy" data and its terminology (observations/rows, variables/columns, values)
+
+## Supplemental Reading
+
+Want to learn more about `R` and why others use it? Below are some excellent supplemental readings. Some of these readings are more (B)eginner friendly and others are more (A)dvanced, and so we have marked each reading appropriately. 
+
+1. $^B$Weston, S. J., & Yee, D. (2017). [Why you should become a useR: A brief introduction to R.](https://www.psychologicalscience.org/observer/why-you-should-become-a-user-a-brief-introduction-to-r) *APS Observer*, 30(3).
+
+2. $^B$Navarro, D. (2020). [1. Core toolkit](http://psyr.djnavarro.net/index.html). *R for Psychological Science*.
+
+3. $^A$ McNamara, A. (2020, July). [Speaking R.](https://www.amelia.mn/SpeakingR/#1). [Conference presentation]. [useR! 2020, Remote Conference](https://user2020.r-project.org/). https://www.amelia.mn/SpeakingR/#1

@@ -1,0 +1,58 @@
+---
+title: "Exploratory data analysis of HELPrct data"
+author: "YOUR NAME HERE"
+date: "7/24/2020"
+output: pdf_document
+---
+
+
+<!---
+Steps for SSW 798 - Secondary Data Analysis:
+1. Change your name above in the "Author" section where it says "YOUR NAME HERE" (keep the quotes)
+2. Complete all the steps below that are included in comments that look like this and are in ALL CAPS (I'm not yelling, just trying to keep it clear...)
+3. When you're done, click the "Knit" icon above, which will generate a pdf document with both text and statistical output
+4. Open the PDF of the same name from the Files tab, ideally along side the screen you're looking at here.
+
+[Note: this text will be hidden in the pdf document you generate. It's just between us!]
+--->
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mosaic)
+data("HELPrct")
+View(HELPrct)
+```
+
+## What is the value of `cesd` for the 5th Participant?
+
+```{r}
+head(HELPrct)
+```
+
+<!--- WRITE A COMPLETE SENTENCE BELOW THAT INTERPRETS THE VALUE OF CESD FOR THE 5TH OBSERVATION / PARTICIPANT. A VALUE OF 20 FOR A CESD CAN BE INTERPRETED AS A SCORE OF 20. --->
+
+
+### Based on what you now know about the CESD measure, do you think Participant #5's score is high or low?
+
+<!--- WRITE A COMPLETE SENTENCE BELOW THAT ANSWERS THE QUESTION ABOVE --->
+
+
+## How (a)typical is the 5th Participant's CESD score in this population?
+
+<!--- RUN THE CODE CHUNK BELOW AND USE THE OUTPUT TO ANSWER THE QUESTION. --->
+```{r pressure, echo=FALSE, message=FALSE}
+library(tidyverse)
+qplot(x=cesd, data=HELPrct)
+```
+
+The y-axis is the number of people, the x-axis is the CESD score, and the height of the bar reflects how many people in this study had that CESD score.
+
+
+## Based on the graph above, do you think Participant #5's score is high or low? Why or why not?
+
+<!--- WRITE A COMPLETE SENTENCE BELOW THAT INTERPRETS THE VALUE OF CESD FOR THE 5TH OBSERVATION / PARTICIPANT RELATIVE TO THE DISTRIBUTION OF ALL CESD SCORES IN THE SAMPLE AND EXPLAINS YOUR RATIONALE--->
+
+
+
+<!--- FINAL STEP! CHANGE YOUR NAME IN THE VERY TOP SECTION OF THE DOCUMENT AND THEN CLICK THE "KNIT" ICON JUST ABOVE THE TOP OF THE DOCUMENT TO CONVERT THIS INTO A PDF. --->

@@ -1,0 +1,13 @@
+name: 5_CategoricalDependentVariables
+title: 5_CategoricalDependentVariables
+username:
+account: bcapistrant
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2627877
+bundleId: 3455343
+url: https://bcapistrant.shinyapps.io/5_CategoricalDependentVariables/
+when: 1596124598.92824
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|1_Intro_to_R_and_Data.html|1_Intro_to_R_and_Data.Rmd|2_Intro_to_RStudio_and_RMarkdown.html|2_Intro_to_RStudio_and_RMarkdown.Rmd|3_ExploratoryDataAnalysis_Table1.html|3_ExploratoryDataAnalysis_Table1.Rmd|4_ContinuousDependentVariables.html|4_ContinuousDependentVariables.Rmd|5_CategoricalDependentVariables.html|HELPRCT_CESD.Rmd|IntroPiece.docx|Temp.html|Temp.Rmd|TestingTutorial.html|TestingTutorial.Rmd|Untitled.html|Untitled.Rmd|WhatAmILookingAt.png|3_ExploratoryDataAnalysis_Table1_files/figure-html/age-1.png|3_ExploratoryDataAnalysis_Table1_files/figure-html/age-labeled-1.png|3_ExploratoryDataAnalysis_Table1_files/figure-html/unnamed-chunk-1-1.png|4_ContinuousDependentVariables_files/figure-html/cesd_substance_boxplot-1.png|4_ContinuousDependentVariables_files/figure-html/cesd_substance_density-1.png|4_ContinuousDependentVariables_files/figure-html/unnamed-chunk-2-1.png|5_CategoricalDependentVariables_files/figure-html/categorical_bar_charts-1.png|images/HELPrct_Table1_w:strata_part2.png|images/HELPrct_Table1_w:strata.png|images/HELPrct_Table1.png|img/tidydata.jpg|img/tidydata.png|SDS291_Resources/homework.Rmd|SDS291_Resources/install.Rmd|SDS291_Resources/interface.Rmd|SDS291_Resources/RMarkdown.Rmd|template

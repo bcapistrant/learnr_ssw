@@ -1,0 +1,340 @@
+---
+title: "Intro to RStudio & RMarkdown"
+author: "Ben Capistrant"
+date: "2020-07-24"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+description: "Getting Started with RStudio and RMarkdown"
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(mosaic)
+data(mosaic::HELPrct)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1. Introduction
+
+The main point of this tutorial is to introduce two key ways that we will be using the `R` language and data: through a piece of software and with some particular kinds of files that combine text and statistical output along with some built in formatting.  Throughout this tutorial, the reference to an analogy to writing a paper in any language (especially one other than your primary language, since that seems to apply here). You'll likely want to use a helpful, easy to understand software for writing and formatting that paper. You will also want to format the paper -- using headings, bold and italics, etc. -- and there are ways to do that integrate with the `R` language. 
+
+In this tutorial, you will learn to:
+
+- identify the structure of RStudio user interface (i.e., know what you're looking at in RStudio)
+- open RStudio and import/download files to/from the RStudio Server
+- define the features of an RMarkdown file to integrate text and statistical output
+- generate a complete, knitted .pdf document with statistical and text output combined together
+
+In the next section, you will learn a little more about the example data set we will be using throughout this tutorial: the `HELPrct` data.
+
+## 2. The Data
+
+We will continue to use the `HELPrct` data that we used in the first tutorial.
+
+These data from a health evaluation and linkage to primary care (HELP) randomized control trial (rct) conducted in Boston in the late 1990s and early 2000s. From the main article reporting the findings (Samet et al, 2003), the researchers describe the study:
+
+>We attempted to test empirically a novel ‘mixed integrative–distributive’ approach to link patients undergoing residential detoxification for alcohol and drug problems to primary medical care by establishing a multi‐disciplinary medical clinic in a substance abuse treatment unit. This clinic was called the health evaluation and linkage to primary care (HELP) clinic. The purpose of the clinic was to perform a single comprehensive initial evaluation at the substance abuse treatment facility and then arrange subsequent follow‐up with a primary care physician from whom the patient could receive ongoing health care. To assess the effectiveness of this model for linkage of substance abusers to primary medical care, we utilized a randomized controlled trial design. Our primary hypothesis was that alcohol and drug dependent people assigned to attend a multi‐disciplinary health evaluation while undergoing residential detoxification would be more likely to link with primary medical care. Secondary hypotheses were that such an intervention would decrease addiction severity, improve health‐related quality of life, optimize utilization of medical and addiction resources and minimize HIV risk behaviors. Planned subgroup analyses included these outcomes stratified by substances of choice.
+
+Samet, J. H., Larson, M. J., Horton, N. J., Doyle, K., Winter, M., & Saitz, R. (2003). Linking alcohol‐and drug‐dependent adults to primary medical care: a randomized controlled trial of a multi‐disciplinary health intervention in a detoxification unit. _Addiction_, 98(4), 509-516. [Full text available via Smith library here](https://onlinelibrary-wiley-com.libproxy.smith.edu/doi/pdf/10.1046/j.1360-0443.2003.00328.x)
+
+The raw data we are using reflect those participants who completed the study, and we will be using some of the measures described above.  Specifically, we will continue to use the `cesd` variable, which is an acronym for the Centers for Epidemiological Studies - Depression (CESD) scale, a commonly used measure of number of depressive symptoms that is easy to collect in community samples and surveys. On the 20 item version of the scale, scores range from 0 - 60 with scores $\geq$ 16 are considered to reflect of clinically-diagnosable depression.
+
+Remember the first few rows of the data you have seen before:
+
+```{r head-function, exercise=TRUE}
+head(HELPrct)
+```
+
+```{r head-results-quiz}
+quiz(
+  question("Of the 6 participants (rows), how many had CES-D scores above common thresholds that suggest a clinical assessment is warranted?",
+    answer("1"),
+    answer("2"),
+    answer("3"),    
+    answer("4", correct = TRUE, message = "Yes! Participants 1,2,3 and 5 all have CES-D scores 16+."),
+    answer("5"),
+  allow_retry = TRUE
+  )
+)
+```
+
+Great job! You just illustrated your understanding of the structure of the data. Each row reflects an individual in the HELP study, and each column reflects some variable or measure about them, and the number in the cell is an individual's specific value on that particular measure. You can "read" these data by going _across the row_ of their data to understand more about a particular individual. Or, as we just did, you can read _down a column_ / variable to understand the different values of that particular measure across the individuals in the dataset.
+
+Okay, back to the task at hand -- how do we use RStudio and RMarkdown to open, analyze, and generate a report about these `HELPrct` data?
+
+## 3. What is RStudio?
+
+We will do all of the modeling (and other computational work) in this class with the open source (and free!) programming language [R](https://cran.r-project.org/). You will use [RStudio](https://www.rstudio.com/) as the main program to conduct analyses with the `R` language. 
+
+`R` is the language and what's running "under the hood", and RStudio is essentially a really user-friendly interface to do what you want in `R`. You might think of this like you're writing a paper in a different language -- you could write that in a very simple text application (like your Notes app) or in MS Word / Google Docs / Keynote, which are much higher-powered, user friendly versions of creating a well formatted document in a given language. So in this `R`:RStudio :: Text:Word analogy, there are a few key advantages of RStudio the same way there are with Word, including:
+
+- more advanced features of a document like integrate images, or a Zotero citation library, different fonts, table of contents, etc. 
+- interactive features like spell check
+- drop down menus, and suggestions for completing your code (you may have seen this already in the first tutorial)
+
+In sum, RStudio allows users to develop and edit programs in `R` by supporting a large number of statistical packages, higher quality graphics, and the ability to manage your workspace.
+
+### Understanding the RStudio Interface
+
+The RStudio interface (i.e., what am I looking at on the screen and what do I do?)
+
+In clockwise order, let's talk through what's going on in each of the quadrants of the screen
+
+![](https://sds291.netlify.app/img/install/RStudio_Screenshot.png){width="85%"}
+
+#### Upper Right: your environment
+ - This quadrant includes datasets, created variables, etc, and history shows all of the commands that you've previously entered. 
+
+#### Bottom Right: a bunch of very helpful tabs
+
+- Files:  anything you’ve uploaded to the server (datasets, markdown files) and the resulting files that you knitted together will be here
+- Plots: any plots that you generate will show up in the panel in the lower right corner.
+- Help:  you can search here for help, to find commands, etc.
+- Packages: the list of installed packages, such as packages to tell R how to make a graph, to fit a linear regression model. The textbook has a package that includes all of the datasets used in the examples – you can look to see if Stat2Data is listed
+- Viewer: where output gets generated, including knitted files
+
+##### Bottom Left / Left panel: 
+
+Initially, when you open RStudio, all that’s on the left is the Console. Every time you launch RStudio, it will have the same text at the top of the console telling you the version of R that you're running.  Below that information is the prompt.  Initially, interacting with R is all about typing commands and interpreting the output. To work interactively (i.e., you type a command right after the >, press enter, and see the results), you can use the prompt.  In some of the visual examples, the console is minimized because we generally want to work with RStudio via documents that will save our code -- particularly RMarkdown files that will integrate our text (text in the Results sections) with the numerical output in the results section (as well as tables, figures)
+
+#### Upper Left: RMarkdown files appear here once opened. 
+
+We will be using RMarkdown, where you can write sections of code and text interspersed with one another in one RMarkdown file (.rmd). You can tell RStudio to run code in an RMarkdown file line-by-line, chunk-by-chunk (chunk is the highly technical R term for a section of code), or to “knit” the text and the results of the executed code in the RMarkdown file into one complete finished product. When you open RMarkdown files, they appear in the top left quadrant of the screen (in orange below), and the console moves down.
+
+See an example below:
+
+![](https://science.smith.edu/~bcapistrant/WhatAmILookingAt.png){width="85%"}
+
+#### Quiz on RStudio Interface
+
+```{r rstudio_interface_pre, echo=FALSE}
+quiz(caption = "RStudio",
+  question("In which quadrant is the help section?",
+    answer("Top Right"),
+    answer("Bottom Right", correct = TRUE),
+    answer("Bottom Left"),
+    answer("Top Left")
+  ),
+  question("In which quadrant do datasets show up when loaded?",
+    answer("Top Right", correct = TRUE),
+    answer("Bottom Right"),
+    answer("Bottom Left"),
+    answer("Top Left")
+  ),
+  question("In which quadrant can you see what files you have?",
+    answer("Top Right"),
+    answer("Bottom Right", correct = TRUE),
+    answer("Bottom Left"),
+    answer("Top Left")
+  ),
+  question("In which quadrant do RMarkdown files open?",
+    answer("Top Right"),
+    answer("Bottom Right"),
+    answer("Bottom Left"),
+    answer("Top Left", correct = TRUE)
+  )
+)
+```
+
+### How to Access RStudio
+
+There are a few different ways to work with `R` and RStudio. For new users, I would recommend using the server. If you plan to use RStudio after leaving Smith, you could use the desktop version so that it stays with you.
+
+#### Smith College RStudio Server
+
+Smith College runs its own version of RStudio that's accessible through your web browser and won't require installing anything: [rstudio.smith.edu](http://rstudio.smith.edu). This server version is sort of like a cloud version of RStudio but just for Smith community members, so it is fairly stable and has all of the packages you need installed.
+
+#### RStudio locally on your computer
+
+The server and cloud approaches are great for probably 90% of what we'll do in the class. If you want to work on RStudio locally on your computer, you certainly can.  First, you'd need to download and [install `R`](https://cran.r-project.org/). Second, download and [install RStudio](https://www.rstudio.com/products/rstudio/download/#download). And you should be good to go! I'm also happy to help if this is an approach you want to take. 
+
+### Opening RStudio
+
+These instructions below are specific to using the RStudio Server, which you are encouraged to use. If you're running RStudio locally on your desktop, you will have a different interface and process (see note below about additional software you need if running RStudio locally on your computer).
+
+
+#### Sign into RStudio Server
+
+Again, you're encouraged to use the [Smith College RStudio Server](http://rstudio.smith.edu). Log in using your Smith username and password (i.e., same as for your email, BannerWeb, etc.).
+
+You probably want to open that in a new browser tab and keep both this tutorial and the RStudio Server open so you can go back and forth between this exercise and that document.
+
+
+#### Upload an RMarkdown File to the Server
+
+- [Click here to downlowad our RMarkdown File](https://drive.google.com/file/d/1JjTTbJtl_sjPrl0FotchYEaM7yGGTI6y/view?usp=sharing)
+
+- Click Upload on Files tab in the section of the Bottom-Right quadrant of the RStudio interface
+
+- Select the RMarkdown file from wherever you downloaded it onto your computer
+
+- Once you click "ok" and the file uploads, the file will appear in a list of all files located in your personal storage on the server.
+
+![](https://sds291.netlify.app/img/install/Uploading_to_RStudio_Server.gif){width="65%"}
+
+#### Open, edit (including putting in your answers), and run the first code chunk
+
+- To open the file, just click on the file name in the Files tab. It will open in the top left quadrant.
+
+- From within the file, click on the green "play" button in the first grey section of the document. 
+
+#### Quiz on working in RStudio
+
+```{r rstudio_interface_check, echo=FALSE}
+quiz(caption = "RStudio",
+  question("In which quadrant did the HELPrct data show up?",
+    answer("Top Right", correct = TRUE),
+    answer("Bottom Right"),
+    answer("Bottom Left"),
+    answer("Top Left")
+  ),
+  question("What did the command `View(HELPrct)` do?",
+    answer("Loaded a package"),
+    answer("Loaded the data"),
+    answer("Opened the HELPrct data in a spreadsheet", correct = TRUE),
+    answer("Visualized the HELPrct data")
+  ),
+    question("What did you do to run the code chunk?",
+    answer("Clicked `knit`"),
+    answer("Clicked the green `play` button", correct = TRUE),
+    answer("Typed `?run`"),
+    answer("Clicked on the file name.")
+  )
+)
+```
+
+### Summary of RStudio
+
+In this section, you learned:
+
+- about the interface for RStudio, 
+- how to access RStudio, 
+- how to upload files, and
+- you ran your first code in RStudio.
+
+Yay!
+
+![](https://media.giphy.com/media/nCpv15Q5IQ8EM/giphy.gif)
+
+
+## 4. What is RMarkdown?
+Now let's talk about what's going on in that file you opened in RStudio.
+
+These are called "RMarkdown" files and their primary purpose (for our uses at least) is to bring together sections of text and statistical code and output into one, organized document. Think about this document visually sort of like a zebra with white and grey sections. The text you write in sentences (like what you're reading now) is in white background. The grey sections you see above and below denote commands you're asking `R` to run rather than as text you want it to format. When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded `R` code chunks within the document.
+
+Below are a few videos that articulate why and how we work with RMarkdown files. These will introduce some of these core ideas, and then we will do some practice with our own data.  It's worth noting that these videos come from a specific textbook that we are not using, so there are some specifics in the video that do not apply to us. However, the general ideas remain applicable for our purposes.
+
+### Why `RMarkdown`?
+
+Take a look at this video that explains the principles of what a RMarkdown file does -- and why it's a powerful approach for combining statistical output and text to explain those results.
+
+![](https://www.youtube.com/watch?v=lNWVQ2oxNho)
+
+### How to work with an `RMarkdown` file?
+
+A second video gets more into the mechanics of what goes into an RMarkdown file for our purposes. Ignore the parts about using a "template" -- that's one of the pieces that's specific to a particular textbook and lab that we're not using.  Pay attention, instead, to the general ideas such: header information, code chunks, where `R` code and text each go within the document, and what it means to `knit` the file.
+
+![](https://www.youtube.com/watch?v=o0h-eVABe9M)
+
+```{r Rmarkdown_pre, echo=FALSE}
+quiz(caption = "RMarkdown & RStudio",
+  question("What is the color of the code chunk the RMarkdown file?",
+    answer("Grey", correct = TRUE),
+    answer("White"),
+    answer("Green"),
+    answer("Blue")
+  ),
+  question("What is the color of the text in a RMarkdown file?",
+    answer("Grey"),
+    answer("White", correct = TRUE),
+    answer("Green"),
+    answer("Blue")
+  ),
+  question("What part of the file has your name?",
+    answer("the top header", correct = TRUE),
+    answer("the bottom footer"),
+    answer("the grey chunk"),
+    answer("the white chunk")
+  )
+)
+```
+
+### Back to the RMarkdown file you uploaded in RStudio
+
+There are four main steps here.
+
+1. Practice running a code chunk again by running the code chunk with the `head(HELPrct)` command. What do you expect to see? Is it different than what you saw in the first interactive tutorial? Use this information to answer the question in the RMarkdown file about the 5th Participant's `cesd` score.
+
+2. Run the final code chunk which will generate a histogram of the frequency of `cesd` scores. Use this information to characterize how (a)typical you think the 5th participant's CESD score is within this sample.
+
+3. Change your name in the YAML header, and knit the file.
+
+#### Knit the file 
+
+- Click on the knit button/icon in the quadrant with your RMarkdown file. Knit runs the RMarkdown file and combines (or knits) the r code and text into the output format of your choice.
+
+- RStudio will pop up a new window with your knitted, output file. (Note, if you have a pop-up blocker, you may not see the file immediately -- click "Try Again" to open the file)
+
+![](https://sds291.netlify.app/img/install/Knitting_On_Server.gif){width=85%}
+
+#### Export the file(s) from the server to your local computer.
+
+- Select the file(s) you want to download from the Files tab in the bottom right
+
+- Select "More", and then "export" to download the files from the server
+
+![](https://sds291.netlify.app/img/install/Downloading_from_RStudio_Server.gif){width=85%}
+
+#### Open the .pdf file to see that worked
+
+The pop-up probably already showed you the file, but just in case, open the pdf that you downloaded from the server and take a look at it. Do you see where your name is? How the graph is formatted?  What about how the `head(HELPrct)` output is formatted?
+
+Brag about your success by emailing me the file! (you don't need to for credit or anything -- I'm just trying to celebrate with you / gas you up a bit lol)
+
+![](https://media.giphy.com/media/3o6ZtdrMvBXgkEAJgc/giphy.gif){width=50%}
+
+### Summary of Working with RMarkdown
+
+You did it!
+
+In this section, you:
+- clarified the components of an RMarkdown file
+- ran multiple code chunks within an RMarkdown file
+- edited an RMarkdown file to reflect in text what the output showed
+- knitted an RMarkdown file to a pdf
+- downloaded the pdf from the server
+
+![](https://media.giphy.com/media/l0Hlx6jKwLPAd4PAc/giphy.gif)
+
+## 5. Tutorial Summary
+
+We've extended the pieces of the first tutorial of what is `R` and data structures common to our kind of statistical analysis with how to implement these ideas -- how to run statistical code to work with data and generate organized statistical and conceptual reports of what you find -- with RStudio and RMarkdown.
+
+### What is R, RStudio and RMarkdown?
+
+- **`R`:** is a programming language specifically designed for statistical analysis. R is open-source and free. In the statistics realm, alternatives include SAS, Stata, and SPSS.
+
+- **RStudio**: is the software through which you will write code for conducting statistical analyses in `R` language. RStudio is also open-source software, and depends upon a valid R installation to function. Again, `Text Editor : MS Word :: R : RStudio`. You can think of RStudio as the piece of software through which you can run commands, do data cleaning statistical tests, and run more complicated programs that you write in code in the `R` language. RStudio also has functionality to combine the statistical processes with text, figures, etc. with RMarkdown (below).
+
+- **RMarkdown**: is a syntax -- again, like a language -- for composing relatively simple documents that combine R code and text. Specifically, RMarkdown is a type of file that uses:
+- `R` language
+- syntax from Markdown, a general way to format documents and text that integrates with `R`, and
+- implements the RMarkdown file via RStudio.
+
+If you’ve used Stata or SPSS before, think about RMarkdown file as some combination of your statistical program / do file and the text features of Word where you would write up your results. Rather than doing them separately, cutting and pasting results into Word, you can do it all in the same file with RMarkdown. With RMarkdown, you can do both R code and include written text both in the same file (with Markdown formatting), “knit” it (i.e., combine the pieces of the file together) into output formats like pdf, Word document, and HTML.
+
+## 6. Supplemental Materials
+
+Want to learn more about RMarkdown and RStudio? Below are some excellent supplemental materials - blog posts, readings, and longer videos. Some of these materials are more (B)eginner friendly and others are more (A)dvanced; they are marked accordingly. 
+
+1. $^B$ Peng, R. [Roger Peng]. (2018, May 8). _R Markdown with RStudio_. [Video]. YouTube. https://www.youtube.com/watch?v=DNS7i2m4sB0 
+
+[Roger Peng](http://www.biostat.jhsph.edu/~rpeng/), a biostatistician at Johns Hopkins, [data science faculty](https://www.coursera.org/specializations/jhu-data-science) there, host of some [statistics and data science podcasts](http://nssdeviations.com/), and [pupeteer](https://www.youtube.com/watch?v=i58Aul5ZB-E&feature=youtu.be), has a helpful video to get started with a new RMarkdown file.
+
+![](https://www.youtube.com/watch?v=DNS7i2m4sB0)
+
+2. $^A$ Love, K. (n.d.) The Advantages of RStudio. The Analysis Factor. https://www.theanalysisfactor.com/the-advantages-of-rstudio/
